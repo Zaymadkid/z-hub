@@ -11,6 +11,34 @@ getgenv().Config = {
     Discord = "https://discord.gg/YourServer"
 }
 
+-- // AUTO-UPDATE SYSTEM // --
+getgenv().LocalVersion = "1.0.0"
+local function CheckForUpdates()
+    local success, remote = pcall(function()
+        return loadstring(game:HttpGet('https://raw.githubusercontent.com/Zaymadkid/z-hub/main/version.lua'))()
+    end)
+    
+    if success and remote then
+        if remote.Version ~= getgenv().LocalVersion then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Z HUB UPDATE",
+                Text = "New version available! Reloading...",
+                Duration = 3
+            })
+            task.wait(2)
+            -- Auto-reload the updated script
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/Zaymadkid/z-hub/main/zhub-v22-ui.lua'))()
+            return true
+        end
+    end
+    return false
+end
+
+-- Check for updates on startup
+if not CheckForUpdates() then
+    -- Continue loading if no update
+end
+
 -- // 2. KEY GENERATION LOGIC (Synced with Website) // --
 local function GetCurrentKey()
     local Date = os.date("!*t") -- UTC Time
