@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z HUB | V22 FORTRESS</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff003c; /* Z Red */
+            --secondary: #cccccc;
+            --bg: #050505;
+            --surface: #0a0a0a;
+            --neon-glow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+        
+        body {
+            background-color: var(--bg);
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- UPDATE BANNER --- */
+        .update-banner {
+            background: linear-gradient(90deg, #ff9900, #ff003c);
+            color: #000;
+            text-align: center;
+            padding: 8px;
+            font-weight: 800;
+            font-family: 'Orbitron';
+            font-size: 14px;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 2000;
+            box-shadow: 0 5px 20px rgba(255, 60, 0, 0.3);
+            animation: slideDown 1s ease;
+        }
+
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
+        /* --- MATRIX BACKGROUND --- */
+        #matrix-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.1;
+        }
+
+        /* --- INTRO OVERLAY --- */
+        #intro-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            transition: opacity 1s ease;
+        }
+        
+        .enter-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 20px 60px;
+            font-family: 'Orbitron';
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: var(--neon-glow);
+            text-transform: uppercase;
+        }
+        .enter-btn:hover { background: var(--primary); color: #fff; transform: scale(1.1); }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; top: 40px; width: 100%; padding: 20px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            z-index: 1000; border-bottom: 1px solid #333;
+        }
+        .brand { font-family: 'Orbitron'; font-size: 30px; font-weight: 900; letter-spacing: 2px; }
+        .brand span { color: var(--primary); }
+        .nav-links a {
+            color: #fff; text-decoration: none; margin-left: 30px;
+            font-family: 'Share Tech Mono'; font-size: 16px; transition: 0.3s;
+        }
+        .nav-links a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+
+        /* --- HERO --- */
+        header {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            padding-top: 50px;
+        }
+        h1 {
+            font-family: 'Orbitron'; font-size: 6rem; font-weight: 900;
+            line-height: 1; text-transform: uppercase;
+            text-shadow: 4px 4px 0px var(--primary);
+            animation: glitch 3s infinite;
+        }
+        @keyframes glitch {
+            0% { text-shadow: 4px 4px 0px var(--primary); }
+            50% { text-shadow: -4px -4px 0px #00ffff; }
+            100% { text-shadow: 4px 4px 0px var(--primary); }
+        }
+        .subtitle { font-family: 'Share Tech Mono'; font-size: 1.5rem; color: #888; margin-top: 20px; }
+
+        /* --- KEY GEN --- */
+        .key-terminal {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid #333;
+            max-width: 700px; margin: 50px auto; padding: 40px;
+            border-radius: 10px; position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+        .key-display {
+            font-family: 'Orbitron'; font-size: 40px; color: var(--primary);
+            border: 1px dashed #333; padding: 20px; margin: 20px 0;
+            cursor: pointer; transition: 0.3s;
+        }
+        .key-display:hover { background: rgba(255, 0, 60, 0.1); border-color: var(--primary); }
+
+        /* --- ROADMAP / FEATURES --- */
+        .grid-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px; padding: 50px 10%;
+        }
+        .card {
+            background: #0f0f0f; padding: 30px; border: 1px solid #222;
+            transition: 0.3s; border-left: 3px solid transparent;
+        }
+        .card:hover { transform: translateY(-10px); border-left-color: var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card h3 { font-family: 'Orbitron'; margin-bottom: 10px; font-size: 1.5rem; }
+
+        /* --- MUSIC PLAYER --- */
+        #music-widget {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #111; border: 1px solid var(--primary);
+            padding: 15px; border-radius: 50px; display: flex; align-items: center; gap: 15px;
+            transform: translateX(200px); opacity: 0; transition: 0.5s;
+            z-index: 2000; box-shadow: var(--neon-glow);
+        }
+        #music-widget.active { transform: translateX(0); opacity: 1; }
+        .controls button { background: none; border: none; color: white; cursor: pointer; font-size: 16px; }
+        .controls button:hover { color: var(--primary); }
+
+        /* --- MOBILE WARNING --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="update-banner">
+        ⚠️ NEWS: MONETIZATION & LINKVERTISE INTEGRATION COMING SOON! GET VERIFIED.
+    </div>
+
+    <div id="intro-layer">
+        <button class="enter-btn" onclick="enterSite()">INITIALIZE V22</button>
+        <p style="color: #666; margin-top: 20px; font-family: 'Share Tech Mono';">SECURE CONNECTION REQUIRED</p>
+    </div>
+
+    <canvas id="matrix-canvas"></canvas>
+
+    <nav>
+        <div class="brand">Z <span>HUB</span></div>
+        <div class="nav-links">
+            <a href="#key">KEY GEN</a>
+            <a href="#features">FEATURES</a>
+            <a href="#roadmap">ROADMAP</a>
+            <a href="#premium" style="color: gold;">PREMIUM</a>
+        </div>
+    </nav>
+
+    <header>
+        <h1>Z HUB V22</h1>
+        <div class="subtitle">FORTRESS UPDATE: ANTI-TAMPER ACTIVE</div>
+        <div style="margin-top: 40px;">
+            <a href="#key" class="enter-btn" style="font-size: 16px; padding: 15px 40px; text-decoration: none;">GET KEY</a>
+        </div>
+    </header>
+
+    <section id="key" style="text-align: center; padding: 100px 20px;">
+        <h2 style="font-family: 'Orbitron'; font-size: 2.5rem; margin-bottom: 20px;">PUBLIC ACCESS TERMINAL</h2>
+        <div class="key-terminal">
+            <p style="color: #888; font-family: 'Share Tech Mono'; text-align: left;">
+                > SYSTEM: ROTATING KEY (UTC)<br>
+                > STATUS: ONLINE<br>
+                > SECURITY: <span style="color: #00ff00;">ACTIVE</span>
+            </p>
+            <div id="key-output" class="key-display" onclick="copyKey()">CLICK TO GENERATE</div>
+            <p id="timer" style="color: var(--primary); font-weight: bold;">SYNCING...</p>
+        </div>
+    </section>
+
+    <section id="features" style="background: #080808;">
+        <div class="grid-container">
+            <div class="card">
+                <h3><i class="fas fa-shield-alt" style="color: var(--primary);"></i> ANTI-TAMPER</h3>
+                <p style="color: #aaa;">V22 includes a GUI Watchdog. Any attempt to delete the key menu results in an instant kick.</p>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-lock" style="color: var(--primary);"></i> LOCK-IN SYSTEM</h3>
+                <p style="color: #aaa;">Failed key attempts trigger the "Lock In" protocol, removing the user from the server.</p>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-crosshairs" style="color: var(--primary);"></i> AIMBOT V2</h3>
+                <p style="color: #aaa;">Enhanced prediction with FOV Circles and Custom Crosshair overlays.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="roadmap" style="padding: 100px 10%; text-align: center;">
+        <h2 style="font-family: 'Orbitron'; font-size: 2.5rem; margin-bottom: 40px;">DEVELOPMENT ROADMAP</h2>
+        <div style="background: #111; padding: 20px; border-radius: 10px; text-align: left; max-width: 800px; margin: 0 auto; border: 1px solid #333;">
+            <div style="display: flex; gap: 20px; margin-bottom: 20px; align-items: center;">
+                <div style="background: var(--primary); color: white; padding: 5px 10px; font-weight: bold;">NEXT</div>
+                <div style="color: white; font-family: 'Orbitron'; font-size: 1.2rem;">MONETIZATION UPDATE</div>
+            </div>
+            <p style="color: #888;">We are implementing a Linkvertise system to support development. This will allow for more frequent updates and better bypasses.</p>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 50px; color: #444; border-top: 1px solid #111;">
+        &copy; 2025 Z HUB INDUSTRIES.
+    </footer>
+
+    <div id="music-widget">
+        <div style="color: #fff; font-size: 12px; margin-right: 15px;">Z RADIO</div>
+        <div class="controls">
+            <button onclick="prevTrack()"><i class="fas fa-backward"></i></button>
+            <button onclick="toggleMusic()"><i class="fas fa-play" id="play-icon"></i></button>
+            <button onclick="nextTrack()"><i class="fas fa-forward"></i></button>
+        </div>
+        <div id="yt-player" style="display:none;"></div>
+    </div>
+
+    <script>
+        // --- 1. ENTER SITE ---
+        function enterSite() {
+            document.getElementById('intro-layer').style.opacity = '0';
+            setTimeout(() => { document.getElementById('intro-layer').style.display = 'none'; }, 1000);
+            
+            document.getElementById('music-widget').classList.add('active');
+            if(player) player.playVideo();
+            document.getElementById('play-icon').className = 'fas fa-pause';
+        }
+
+        // --- 2. KEY LOGIC ---
+        function updateKey() {
+            const now = new Date();
+            const block = Math.floor(now.getUTCHours() / 7);
+            const key = "ZKEY" + now.getUTCDate() + block;
+            document.getElementById('key-output').innerText = key;
+
+            const nextBlockHour = (block + 1) * 7;
+            let hoursLeft = nextBlockHour - now.getUTCHours();
+            if (hoursLeft <= 0) hoursLeft += 24;
+            const minutesLeft = 59 - now.getUTCMinutes();
+            document.getElementById('timer').innerText = `NEXT ROTATION: ${hoursLeft-1}H ${minutesLeft}M`;
+        }
+        setInterval(updateKey, 1000);
+        updateKey();
+
+        function copyKey() {
+            const k = document.getElementById('key-output').innerText;
+            navigator.clipboard.writeText(k);
+            alert("KEY COPIED: " + k);
+        }
+
+        // --- 3. MUSIC PLAYER ---
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        var playlist = ['JAHZVS4tb1I', '6tPTrgGptU0', 'lSD_L-xic9o', 'lOaxSlJzn08'];
+        var currentTrack = 0;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt-player', {
+                height: '0', width: '0', videoId: playlist[0],
+                events: { 'onStateChange': onPlayerStateChange }
+            });
+        }
+        function onPlayerStateChange(event) { if(event.data == YT.PlayerState.ENDED) nextTrack(); }
+        function toggleMusic() {
+            if(player.getPlayerState() == 1) { player.pauseVideo(); document.getElementById('play-icon').className = 'fas fa-play'; }
+            else { player.playVideo(); document.getElementById('play-icon').className = 'fas fa-pause'; }
+        }
+        function getRandomTrack() { return Math.floor(Math.random() * playlist.length); }
+        function nextTrack() { currentTrack = getRandomTrack(); player.loadVideoById(playlist[currentTrack]); }
+        function prevTrack() { currentTrack = getRandomTrack(); player.loadVideoById(playlist[currentTrack]); }
+
+        // --- 4. MATRIX BACKGROUND ---
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const fontSize = 14; const columns = canvas.width/fontSize;
+        const drops = []; for(let x=0; x<columns; x++) drops[x] = 1;
+
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ff003c"; ctx.font = fontSize + "px monospace";
+            for(let i=0; i<drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random()*chars.length));
+                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+                if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 33);
+    </script>
+</body>
+</html>
